@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>LIBAUD — скоро запуск</title>
+<meta property="og:title" content="LIBAUD — скоро запуск" />
+<meta property="og:description" content="Твоя музыка в Telegram. Старт 29 июня." />
+<meta name="theme-color" content="#060010" />
+<style>
+  :root {
+    --magenta: #ff2bd6;
+    --pink: #ff4fa3;
+    --purple: #9b3bff;
+    --blue: #3b6bff;
+    --cyan: #00e5ff;
+    --bg: #060010;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; min-height: 100%;
+    background: var(--bg);
+    font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden; color: #fff;
+  }
+  body { height: 100dvh; }
+
+  .bgwrap { position: fixed; inset: 0; overflow: hidden; z-index: 0; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; }
+  .b1 { width: 70vw; height: 70vw; left: -20vw; top: -10vh;
+        background: radial-gradient(circle, var(--magenta), transparent 65%);
+        animation: drift1 14s ease-in-out infinite; }
+  .b2 { width: 65vw; height: 65vw; right: -18vw; top: 8vh;
+        background: radial-gradient(circle, var(--blue), transparent 65%);
+        animation: drift2 17s ease-in-out infinite; }
+  .b3 { width: 80vw; height: 80vw; left: -10vw; bottom: -20vh;
+        background: radial-gradient(circle, var(--purple), transparent 65%);
+        animation: drift3 20s ease-in-out infinite; }
+  .b4 { width: 45vw; height: 45vw; right: -8vw; bottom: -6vh;
+        background: radial-gradient(circle, var(--cyan), transparent 65%);
+        animation: drift1 16s ease-in-out infinite reverse; }
+  @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(8vw,6vh) scale(1.15)} }
+  @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-7vw,9vh) scale(1.1)} }
+  @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(6vw,-7vh) scale(1.2)} }
+  canvas#stars { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+  .vignette { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(circle at 50% 40%, transparent 40%, rgba(6,0,16,.7) 100%); }
+
+  .wrap {
+    position: relative; z-index: 3;
+    height: 100dvh; width: 100%;
+    max-width: 460px; margin: 0 auto;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: max(env(safe-area-inset-top),28px) 26px max(env(safe-area-inset-bottom),28px);
+    text-align: center;
+  }
+
+  .logo {
+    width: 132px; height: 132px; object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(255,43,214,.7)) drop-shadow(0 0 40px rgba(0,229,255,.5));
+    animation: float 4s ease-in-out infinite, logoIn 1s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  @keyframes logoIn { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:scale(1)} }
+
+  .brand {
+    margin-top: 18px; font-size: 46px; font-weight: 900; letter-spacing: 7px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--purple), var(--cyan));
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(255,43,214,.55));
+    animation: shimmer 5s linear infinite, fadeUp .9s ease .15s both;
+  }
+  @keyframes shimmer { to { background-position: 300% 0; } }
+  .tagline {
+    margin-top: 8px; font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--cyan); text-shadow: 0 0 12px rgba(0,229,255,.7);
+    animation: fadeUp .9s ease .3s both;
+  }
+
+  .soon {
+    margin-top: 40px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
+    color: #c9b6ff; animation: fadeUp .9s ease .45s both;
+  }
+
+  .countdown { margin-top: 16px; display: flex; align-items: flex-start; justify-content: center; gap: 6px;
+    animation: fadeUp .9s ease .6s both; }
+  .unit { display: flex; flex-direction: column; align-items: center; min-width: 66px; }
+  .num {
+    font-size: 36px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums;
+    color: #fff; width: 100%; padding: 16px 4px; border-radius: 16px;
+    background: rgba(255,255,255,.04);
+    border: 1.5px solid rgba(0,229,255,.45);
+    text-shadow: 0 0 14px rgba(0,229,255,.9);
+    box-shadow: 0 0 24px rgba(0,229,255,.22), inset 0 0 20px rgba(155,59,255,.18);
+    backdrop-filter: blur(6px);
+  }
+  .ulbl { margin-top: 9px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--magenta); font-weight: 700; text-shadow: 0 0 10px rgba(255,43,214,.7); }
+  .colon { font-size: 30px; font-weight: 900; color: var(--magenta); padding-top: 16px;
+    text-shadow: 0 0 12px rgba(255,43,214,.9); animation: blink 1s steps(2,start) infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+
+  .date {
+    margin-top: 28px; font-size: 13px; letter-spacing: 1px; color: #8a7bb5;
+    animation: fadeUp .9s ease .75s both;
+  }
+  .date b { color: #fff; font-weight: 700; text-shadow: 0 0 10px rgba(155,59,255,.8); }
+  .url {
+    margin-top: 6px; font-size: 15px; font-weight: 700; letter-spacing: 1px;
+    background: linear-gradient(90deg, var(--magenta), var(--cyan));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(0,229,255,.5));
+    animation: fadeUp .9s ease .85s both;
+  }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .pop { animation: pop .45s ease; }
+  @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.14);
+    text-shadow:0 0 22px #fff,0 0 44px var(--cyan)} 100%{transform:scale(1)} }
+</style>
+</head>
+<body>
+  <div class="bgwrap">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="blob b3"></div><div class="blob b4"></div>
+  </div>
+  <canvas id="stars"></canvas>
+  <div class="vignette"></div>
+
+  <div class="wrap">
+    <img class="logo" src="logo.png" alt="LIBAUD" />
+    <div class="brand">LIBAUD</div>
+    <div class="tagline">твоя музыка · твоя волна</div>
+
+    <div class="soon">Запуск через</div>
+    <div class="countdown">
+      <div class="unit"><div class="num" id="d">07</div><div class="ulbl">дней</div></div>
+      <div class="colon">:</div>
+      <div class="unit"><div class="num" id="h">00</div><div class="ulbl">часов</div></div>
+      <div class="colon">:</div>
+      <div class="unit"><div class="num" id="m">00</div><div class="ulbl">минут</div></div>
+      <div class="colon">:</div>
+      <div class="unit"><div class="num" id="s">00</div><div class="ulbl">секунд</div></div>
+    </div>
+
+    <div class="date">старт <b>29 июня</b></div>
+    <div class="url">libaud.site</div>
+  </div>
+
+<script>
+  const cv = document.getElementById('stars'), ctx = cv.getContext('2d');
+  let W, H, stars = [];
+  function resize() {
+    W = cv.width = innerWidth; H = cv.height = innerHeight;
+    stars = Array.from({length: 70}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      r: Math.random()*1.6+.4, s: Math.random()*.35+.05,
+      a: Math.random()*.6+.2, c: Math.random()>.5 ? '0,229,255' : '255,43,214'
+    }));
+  }
+  resize(); addEventListener('resize', resize);
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    for (const st of stars) {
+      st.y -= st.s; if (st.y < 0) { st.y = H; st.x = Math.random()*W; }
+      const tw = st.a * (0.6 + 0.4*Math.sin(Date.now()*0.002 + st.x));
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 7);
+      ctx.fillStyle = `rgba(${st.c},${tw})`;
+      ctx.shadowBlur = 8; ctx.shadowColor = `rgba(${st.c},${tw})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  const LAUNCH = new Date(2026, 5, 29, 0, 0, 0);
+  const el = { d:document.getElementById('d'), h:document.getElementById('h'),
+               m:document.getElementById('m'), s:document.getElementById('s') };
+  const pad = n => String(n).padStart(2,'0');
+  let prev = {};
+  function tick() {
+    let diff = Math.max(0, LAUNCH - new Date());
+    const vals = {
+      d: pad(Math.floor(diff/86400000)),
+      h: pad(Math.floor(diff%86400000/3600000)),
+      m: pad(Math.floor(diff%3600000/60000)),
+      s: pad(Math.floor(diff%60000/1000))
+    };
+    for (const k in vals) if (vals[k] !== prev[k]) {
+      el[k].textContent = vals[k];
+      el[k].classList.remove('pop'); void el[k].offsetWidth; el[k].classList.add('pop');
+      prev[k] = vals[k];
+    }
+  }
+  tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
