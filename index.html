@@ -197,7 +197,7 @@
   // Падение сервиса не ломает страницу — всё в try/catch.
   try {
     if (!localStorage.getItem('lb_counted')) {
-      fetch('https://abacus.jasoncameron.dev/hit/libaud-anons-9f3k7q/uv')
+      fetch('https://abacus.jasoncameron.dev/hit/libaud-anons-9f3k7q/visits')
         .then(function(r){ return r.json(); })
         .then(function(){ try { localStorage.setItem('lb_counted','1'); } catch(e){} })
         .catch(function(){});
