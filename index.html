@@ -192,6 +192,17 @@
     }
   }
   tick(); setInterval(tick, 1000);
+
+  // Скрытый счётчик уникальных посетителей (видно только владельцу по секретной ссылке).
+  // Падение сервиса не ломает страницу — всё в try/catch.
+  try {
+    if (!localStorage.getItem('lb_counted')) {
+      fetch('https://abacus.jasoncameron.dev/hit/libaud-anons-9f3k7q/uv')
+        .then(function(r){ return r.json(); })
+        .then(function(){ try { localStorage.setItem('lb_counted','1'); } catch(e){} })
+        .catch(function(){});
+    }
+  } catch (e) {}
 </script>
 </body>
 </html>
